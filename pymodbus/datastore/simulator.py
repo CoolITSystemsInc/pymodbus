@@ -553,7 +553,7 @@ class ModbusSimulatorContext:
         if func_code in self._bits_func_code:
             # Bit count, correct to register count
             count = int((count + WORD_SIZE - 1) / WORD_SIZE)
-            address = int(address / 16)
+            address = int(address)
 
         real_address = self.fc_offset[func_code] + address
         if real_address < 0 or real_address > self.register_count:
@@ -580,9 +580,9 @@ class ModbusSimulatorContext:
                 result.append(reg.value)
         else:
             # bit access
-            real_address = self.fc_offset[func_code] + int(address / 16)
-            bit_index = address % 16
-            reg_count = int((count + bit_index + 15) / 16)
+            real_address = self.fc_offset[func_code] + int(address)
+            bit_index = address
+            reg_count = int(count)
             for i in range(real_address, real_address + reg_count):
                 reg = self.registers[i]
                 if reg.action:
@@ -590,10 +590,9 @@ class ModbusSimulatorContext:
                         self.registers, i, reg, reg.action_kwargs
                     )
                 self.registers[i].count_read += 1
-                while count and bit_index < 16:
-                    result.append(bool(reg.value & (2**bit_index)))
+                while count: 
+                    result.append(bool(reg.value))
                     count -= 1
-                    bit_index += 1
                 bit_index = 0
         return result
 
@@ -611,19 +610,11 @@ class ModbusSimulatorContext:
             return
 
         # bit access
-        real_address = self.fc_offset[func_code] + int(address / 16)
-        bit_index = address % 16
+        real_address = self.fc_offset[func_code] + int(address)
         for value in values:
-            bit_mask = 2**bit_index
             if bool(value):
-                self.registers[real_address].value |= bit_mask
-            else:
-                self.registers[real_address].value &= ~bit_mask
+                self.registers[real_address].value = value
             self.registers[real_address].count_write += 1
-            bit_index += 1
-            if bit_index == 16:
-                bit_index = 0
-                real_address += 1
         return
 
     # --------------------------------------------
