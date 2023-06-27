@@ -590,10 +590,7 @@ class ModbusSimulatorContext:
                         self.registers, i, reg, reg.action_kwargs
                     )
                 self.registers[i].count_read += 1
-                while count: 
-                    result.append(bool(reg.value))
-                    count -= 1
-                bit_index = 0
+                result.append(bool(reg.value))
         return result
 
     def setValues(self, func_code, address, values):
