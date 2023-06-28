@@ -540,7 +540,10 @@ class ModbusSimulatorServer:
             return "Missing register", None
         register = int(register)
         if value := params["value"]:
-            self.datastore_context.registers[register].value = int(value)
+            reg = self.datastore_context.registers[register]
+            reg.value = int(value)
+            if register == 10:
+                self.datastore_context.action_methods[reg.action](self.datastore_context.registers, register, reg, reg.action_kwargs) 
         if bool(params.get("writeable", False)):
             self.datastore_context.registers[register].access = True
         return None, None
