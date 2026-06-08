@@ -1,3 +1,11 @@
+# ⚠️ ARCHIVED REPOSITORY
+
+**Status:** This repository has been archived and is no longer actively maintained.
+
+**Reason:** This code was forked for CDU testing via Modbus but abandoned. No further development is planned.
+
+**Last Updated:** 2023
+
 ================================
 PyModbus - A Python Modbus Stack
 ================================
